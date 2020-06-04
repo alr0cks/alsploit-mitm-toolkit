@@ -61,7 +61,7 @@ try:
         spoof(target_ip_, gateway_ip)
         spoof(gateway_ip, target_ip_)
         packets_sent = packets_sent + 2
-        print("\r[+] Packets sent:" + str(packets_sent)),
+        print(("\r[+] Packets sent:" + str(packets_sent)), end=' ')
         sys.stdout.flush()
         time.sleep(2)
 
