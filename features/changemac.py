@@ -22,6 +22,10 @@ def get_arguments():
     return options
 
 
+def get_interface():
+    all_interface = subprocess.check_output(["nmcli", "device", "status"]).decode('utf-8')
+    return all_interface
+
 def change_mac(interface, new_mac):
     print(("[+] Changing MAC Address for " + interface + " to " + new_mac))
 
@@ -30,13 +34,13 @@ def change_mac(interface, new_mac):
     subprocess.call(["ifconfig", interface, "up"])
 
 def get_mac(interface):
-    ifconfig_result = subprocess.check_output(["ifconfig", interface])
-
+    ifconfig_result = subprocess.check_output(["ifconfig", interface]).decode('utf-8')
     mac_result = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w", ifconfig_result)
 
     if mac_result:
         return mac_result.group(0)
     else:
+        return None
         print("[-] Cound not find the MAC Address")
 
 def random_mac():
@@ -70,7 +74,6 @@ if current_mac==options.new_mac or current_mac==rand_mac:
     print(("[+] MAC Address was changed sucessfully to " + current_mac))
 else:
     print("[-] MAC Address did not get changed.")
-
 
 
 
