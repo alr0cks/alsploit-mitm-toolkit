@@ -2,9 +2,9 @@
 # import spoof.arpspoofer as arpspoof
 # import spoof.dnsspoofer as dnsspoof
 import features.changemac as changemac
+import networkscan.netscan as netscan
 # import threading
 # import time
-import curses
 
 def logo():
     return f"""\033[92m
@@ -19,15 +19,24 @@ def logo():
     """
     
 
-def macchange():
-    print("List of available Interfaces:\n")
-    print(changemac.get_interface())
-    interface = input("Enter the target interface:")
-    current_mac = changemac.get_mac(interface)
-    if current_mac == None:
-        print("[-] Cound not find the MAC Address")
-    else:
-        print("[+]Current MAC Address: " + str(current_mac))
-    print("Choose one of the following:")
 
+def run():
+    current = "alsploit"
+    # result = ""
+    while True:
+        command = input("(" + current + ")" + ">> ")
+        command = command.split(" ")
+        # try:
+        if command[0]=="changemac":
+            changemac.run_mac()
+        
+        if command[0]=="netscan":
+            netscan.run_netscan()
+
+
+                    
+        # except Exception:
+            print("Error")
+        # print(result)
 print(logo())
+run()

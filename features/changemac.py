@@ -1,49 +1,38 @@
 #!/usr/bin/env python
 
 import subprocess
-import optparse
+# import optparse
 import re
 import queue
 from random import choice, randint
 
 queue = queue.Queue()
 
-def get_arguments():
-    parser = optparse.OptionParser()
-    parser.add_option("-i", "--interface", dest="interface", help="Interface for the Mac Changer")
-    parser.add_option("-m", "--mac", dest="new_mac", help="New MAC Address")
-    parser.add_option("-r", "--random", dest ="rand_mac", help="Random MAC Address",action="store_true")
-    (options, arguments)=parser.parse_args()
-    if not options.interface:
-        parser.error("[-] Please specify an interface, use --help for more.")
-    if not options.new_mac and not options.rand_mac:
-        parser.error("[-] Please specify an new MAC Address, use --help for more.")
-
-    return options
-
 
 def get_interface():
     all_interface = subprocess.check_output(["nmcli", "device", "status"]).decode('utf-8')
+    
     return all_interface
 
 def change_mac(interface, new_mac):
-    print(("[+] Changing MAC Address for " + interface + " to " + new_mac))
 
-    subprocess.call(["ifconfig", interface, "down"])
-    subprocess.call(["ifconfig", interface, "hw", "ether", new_mac])
-    subprocess.call(["ifconfig", interface, "up"])
+    subprocess.call(["ifconfig", interface[0], "down"])
+    subprocess.call(["ifconfig", interface[0], "hw", "ether", new_mac])
+    subprocess.call(["ifconfig", interface[0], "up"])
+
+    return new_mac
 
 def get_mac(interface):
-    ifconfig_result = subprocess.check_output(["ifconfig", interface]).decode('utf-8')
+    ifconfig_result = subprocess.check_output(['ifconfig', interface[0]]).decode('utf-8')
     mac_result = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w", ifconfig_result)
 
     if mac_result:
         return mac_result.group(0)
     else:
-        return None
-        print("[-] Cound not find the MAC Address")
+        return "[-] Cound not find the MAC Address"
 
-def random_mac():
+
+def random_mac(interface):
     cisco = ["00","40","96"]
     dell = ["00","14","22"]
 
@@ -53,27 +42,54 @@ def random_mac():
         two = choice(str(randint(0,9)))
         three = (str(one + two))
         mac_address.append(three)
+    newmac = ":".join(mac_address)
 
-    return ":".join(mac_address)
-
-options = get_arguments()
-print("MAC Changer\n\t-Alrocks29")
-current_mac = get_mac(options.interface)
-print(("Current MAC = " + str(current_mac)))
-rand_mac = random_mac()
-if current_mac:
-    if options.new_mac:
-        change_mac(options.interface, options.new_mac)
-        current_mac = get_mac(options.interface)
-    elif options.rand_mac:
-        change_mac(options.interface, rand_mac)
-        current_mac = get_mac(options.interface)
+    return change_mac(interface, newmac)
 
 
-if current_mac==options.new_mac or current_mac==rand_mac:
-    print(("[+] MAC Address was changed sucessfully to " + current_mac))
-else:
-    print("[-] MAC Address did not get changed.")
+
+def run_mac():
+    current = "changemac"
+    print("Options: \n1.Show Interface: (showinterface) \n2.Show Current MAC Address: (currentmac) \n3.Set custom MAC Address: (setmac) \n4.Set random MAC Address: (setrandmac)")
+    while True:
+        command = input("(currentmac)>> ")
+        command = command.split(" ")
+        try:
+            if command[0]=="showinterface":
+                print(get_interface())
+            if command[0]=="currentmac":
+                interface = input("Choose Interface: ")
+                interface = interface.split(" ")     
+                print(get_mac(interface))
+            if command[0]=="setmac":
+                interface = input("Choose Interface: ")
+                interface = interface.split(" ")
+                newmac_inp = input("Provide New MAC Address: ")
+                newmac_inp = newmac_inp.split(" ")
+                change_mac(interface, newmac_inp)
+                currentmac = get_mac(interface)
+                if currentmac ==  newmac_inp:
+                    print(("[+] MAC Address was changed sucessfully to " + current_mac))
+                else:
+                    print("[-] MAC Address did not get changed.")
+            if command[0]=="setrandmac":
+                interface = input("Choose Interface: ")
+                interface = interface.split(" ")
+                randmac = random_mac(interface)
+                currentmac = get_mac(interface)
+                if currentmac ==  randmac:
+                    print(("[+] MAC Address was changed sucessfully to " + randmac))
+                else:
+                    print("[-] MAC Address did not get changed.")
+            if command[0]=="exit":
+                break
+        except Exception: 
+            print("Error Executing Command")
+            
+        
+
+
+
 
 
 
