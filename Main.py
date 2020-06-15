@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-# import spoof.arpspoofer as arpspoof
+import spoof.arpspoofer as arpspoof
 # import spoof.dnsspoofer as dnsspoof
 import features.changemac as changemac
 import networkscan.netscan as netscan
-# import threading
-# import time
+import threading
+import time
 
 def logo():
     return f"""\033[92m
@@ -32,6 +32,12 @@ def run():
         
         if command[0]=="netscan":
             netscan.run_netscan()
+
+
+        if command[0]=="arpspoof":
+            t1=threading.Thread(target=arpspoof.arp_run())
+            t1.start()
+            # arpspoof.arp_run()
 
 
                     
