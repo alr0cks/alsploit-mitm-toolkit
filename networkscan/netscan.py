@@ -16,13 +16,10 @@ def scan(ip):
     return client_list
 
 
-def run_netscan():
-    current = "netscan"
+def run_netscan(command):
     while True:
-        command = input("(netscan) Enter IP Range >> ")
-        command = command.split(" ")
         try:
-            result = scan(command[0])
+            result = scan(command)
             print("IP\t\t\tMAC Address\n-------------------------------------")
             for client in result:
                 print((client["ip"] + "\t\t" + client["mac"]))

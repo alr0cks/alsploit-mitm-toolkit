@@ -28,7 +28,6 @@ def run():
             t1=threading.Thread(target=arpspoof.arp_run, args=(target_ip,gateway_ip))
             t1.setDaemon(True)
             t1.start()
-            # arpspoof.arp_run()
 
 
                     

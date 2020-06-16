@@ -56,7 +56,6 @@ def show_gui(target_ip, gateway_ip):
     window.title("ARP Spoof")
     window.geometry('300x50')
 
-    # Label(window, text = "[+] Packets Sent: ").pack()
     packets = Text(window, bg = "black", font= "white")
     packets.pack()
     packets.insert(END, "[+] Packets Sent: ")
@@ -68,9 +67,6 @@ def show_gui(target_ip, gateway_ip):
 def arp_run(target_ip,gateway_ip):
     current = "arpspoof"
     try:
-        # subprocess.call("echo 1 > /proc/sys/net/ipv4/ip_forward", shell=True)
-        # target_ip = input("(arpspoof) Enter Target IP >> ")
-        # gateway_ip = input("(arpspoof) Enter Gateway IP >> ")
         show_gui(target_ip, gateway_ip)
         
         
