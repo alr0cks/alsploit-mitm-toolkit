@@ -1,24 +1,38 @@
-import scapy.all as scapy
-def get_mac(ip):
+#!/usr/bin/python3
+import spoof.arpspoofer as arpspoof
+# import spoof.dnsspoofer as dnsspoof
+import features.changemac as changemac
+import networkscan.netscan as netscan
+import threading
+import time
+    
 
-    # Here, we are creating an ARP request ourselves to ask who has the specific IP we asked for.
-    arp_request = scapy.ARP(pdst=ip)
-    # print(arp_request)
 
-    # Here, we are setting our destination MAC to broadcast MAC address to make sure
-    # it is sent to all the clients who are on the same network
-    broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
+def run():
+    current = "alsploit"
+    # result = ""
+    while True:
+        command = input("(" + current + ")" + ">> ")
+        command = command.split(" ")
+        # try:
+        if command[0]=="changemac":
+            changemac.run_mac()
+        
+        if command[0]=="netscan":
+            netscan.run_netscan()
 
-    # This variable is your packet that will be sent across the network, as it contains information about MAc and ARP
-    arp_request_broadcast = broadcast/arp_request
-    # print(arp_request_broadcast)
-    answered_list = scapy.srp(arp_request_broadcast, timeout=2, verbose = False)[0]
-    # print(answered_list)
-    for element in answered_list:
-        print(element)
-        print(element[1].hwsrc)
-    # srp stands for send and receive packet.
 
-    # return answered_list[0][1].psrc
+        if command[0]=="arpspoof":
+            target_ip = input("(arpspoof) Enter Target IP >> ")
+            gateway_ip = input("(arpspoof) Enter Gateway IP >> ")
+            t1=threading.Thread(target=arpspoof.arp_run, args=(target_ip,gateway_ip))
+            t1.setDaemon(True)
+            t1.start()
+            # arpspoof.arp_run()
 
-get_mac("192.168.43.61")
+
+                    
+        # except Exception:
+            print("Error")
+        # print(result)
+run()

