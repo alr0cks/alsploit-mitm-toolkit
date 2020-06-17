@@ -47,16 +47,22 @@ def send_packets(target_ip, gateway_ip, packets, window):
        
         packets.delete(1.18, END)
         packets.insert(END, packets_sent)
-        window.update_idletasks()
-       
-        time.sleep(2)
+        window.update()
+        
+
+def stop_send(target_ip, gateway_ip, window):
+    restore(target_ip, gateway_ip)
+    restore(gateway_ip, target_ip)
+    window.destroy()
 
 def show_gui(target_ip, gateway_ip):
     window = Tk()
     window.title("ARP Spoof")
-    window.geometry('300x50')
+    window.geometry('300x100')
 
     packets = Text(window, bg = "black", font= "white")
+    quit_btn = Button(window, text = "Quit",width = 8, command = lambda: stop_send(target_ip, gateway_ip, window))
+    quit_btn.pack(side=BOTTOM)
     packets.pack()
     packets.insert(END, "[+] Packets Sent: ")
     send_packets(target_ip, gateway_ip, packets, window)
@@ -66,12 +72,5 @@ def show_gui(target_ip, gateway_ip):
 
 def arp_run(target_ip,gateway_ip):
     current = "arpspoof"
-    try:
-        show_gui(target_ip, gateway_ip)
+    show_gui(target_ip, gateway_ip)
         
-        
-
-    except KeyboardInterrupt:
-            print ("\n[-] Quitting.................")
-            restore(target_ip, gateway_ip)
-            restore(gateway_ip, target_ip)

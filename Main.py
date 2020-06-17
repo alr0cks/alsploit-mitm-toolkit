@@ -3,6 +3,7 @@ import spoof.arpspoofer as arpspoof
 # import spoof.dnsspoofer as dnsspoof
 import features.changemac as changemac
 import networkscan.netscan as netscan
+import sniffdata.sniff as sniff
 import threading
 import time
 
@@ -26,28 +27,43 @@ def run():
     while True:
         command = input("(" + current + ")" + ">> ")
         command = command.split(" ")
-        # try:
-        if command[0]=="changemac":
-            changemac.run_mac()
-        
-        if command[0]=="netscan":
-            current = "netscan"
-            command = input("(netscan) Enter IP Range >> ")
-            command = command.split(" ")
-            netscan.run_netscan(command[0])
+        try:
+            if command[0]=="changemac":
+                changemac.run_mac()
+            
+            if command[0]=="netscan":
+                current = "netscan"
+                command = input("(netscan) Enter IP Range >> ")
+                command = command.split(" ")
+                netscan.run_netscan(command[0])
 
 
-        if command[0]=="arpspoof":
-            target_ip = input("(arpspoof) Enter Target IP >> ")
-            gateway_ip = input("(arpspoof) Enter Gateway IP >> ")
-            t1=threading.Thread(target=arpspoof.arp_run, args=(target_ip,gateway_ip))
-            t1.setDaemon(True)
-            t1.start()
+            if command[0]=="arpspoof":
+                currrent = "arpspoof"
+                target_ip = input("(arpspoof) Enter Target IP >> ")
+                gateway_ip = input("(arpspoof) Enter Gateway IP >> ")
+                t1=threading.Thread(target=arpspoof.arp_run, args=(target_ip,gateway_ip))
+                t1.setDaemon(True)
+                t1.start()
+
+            if command[0]=="sniff":
+                current = "sniff"
+                print(changemac.get_interface())
+                interface = input("(sniff) Choose Interface >> ")
+                interface = interface.split(" ")
+                t1=threading.Thread(target=sniff.sniff_run, args=interface)
+                t1.setDaemon(True)
+                t1.start()
 
 
-                    
-        # except Exception:
-            print("Error")
+
+            
+
+
+
+        except KeyboardInterrupt:
+            print("\nQuitting...............")
+            current = "alsploit"
         # print(result)
 print(logo())
 run()
