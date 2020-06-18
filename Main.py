@@ -25,11 +25,11 @@ def logo():
 
 def run():
     current = "alsploit"
-    # result = ""
     while True:
-        command = input("(" + current + ")" + ">> ")
-        command = command.split(" ")
         try:
+            command = input("(" + current + ")" + ">> ")
+            command = command.split(" ")
+
             if command[0]=="changemac":
                 changemac.run_mac()
             
@@ -60,13 +60,20 @@ def run():
             if command[0]=="injectjs":
                 current = "InjectJS"
                 injection_code = input("(InjectJS) Javascript Code >>")
-                t3 = threading.Thread(target=injectjs.run_injectjs, args=(injection_code[0]))
+                injection_code = injection_code.split(" ")
+                # print(injection_code)
+                t3 = threading.Thread(target=injectjs.run_injectjs, args=(injection_code))
                 t3.setDaemon(True)
                 t3.start() 
 
             if command[0]=="fintercept":
                 current = "FileIntercept"
-                
+                fint_Add = input("(FileInterception) File Address >>")
+                fint_Add = fint_Add.split(" ")
+                # print(fint_Add)
+                t4 = threading.Thread(target=fintersept.run_fintercept, args=(fint_Add))
+                t4.setDaemon(True)
+                t4.start() 
             
             
             current = "alsploit"
@@ -75,6 +82,7 @@ def run():
         except KeyboardInterrupt:
             print("\nQuitting...............")
             current = "alsploit"
+            break
         # print(result)
 print(logo())
 run()
