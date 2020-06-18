@@ -1,9 +1,10 @@
 #!/usr/bin/python3
-import spoof.arpspoofer as arpspoof
 
+import spoof.arpspoofer as arpspoof
 # import spoof.dnsspoofer as dnsspoof
 import features.changemac as changemac
 import networkscan.netscan as netscan
+import features.netcut as netcut
 import sniffdata.sniff as sniff
 import expweb.InjectJS as injectjs
 import expweb.fintercept as fintersept
@@ -39,6 +40,9 @@ def run():
                 command = input("(netscan) Enter IP Range >> ")
                 command = command.split(" ")
                 netscan.run_netscan(command[0])
+
+            if command[0] == "netcut":
+                netcut.run_netcut
 
             if command[0] == "arpspoof":
                 currrent = "arpspoof"
@@ -79,7 +83,7 @@ def run():
 
         except KeyboardInterrupt:
             print("\nQuitting...............")
-            current = "alsploit"
+            # current = "alsploit"
             break
         # print(result)
 
