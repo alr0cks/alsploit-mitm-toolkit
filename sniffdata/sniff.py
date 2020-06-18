@@ -7,8 +7,7 @@ import threading
 
 
 def sniff(interface,window,response):
-
-    scapy.sniff(iface=interface, store=False, prn=temp(window,response))
+    scapy.sniff(iface=interface, store=False, prn=read_packets(window,response))
     
 
 
@@ -24,7 +23,7 @@ def get_login_info(packet):
             if keyword in load:
                 return load
 
-def temp(window,response):
+def read_packets(window,response):
     
     def process_packet(packet):
         if packet.haslayer(http.HTTPRequest):

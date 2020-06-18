@@ -4,6 +4,8 @@ import spoof.arpspoofer as arpspoof
 import features.changemac as changemac
 import networkscan.netscan as netscan
 import sniffdata.sniff as sniff
+import expweb.InjectJS as injectjs
+import expweb.fintercept as fintersept
 import threading
 import time
 
@@ -51,16 +53,25 @@ def run():
                 print(changemac.get_interface())
                 interface = input("(sniff) Choose Interface >> ")
                 interface = interface.split(" ")
-                t1=threading.Thread(target=sniff.sniff_run, args=interface)
-                t1.setDaemon(True)
-                t1.start()
+                t2=threading.Thread(target=sniff.sniff_run, args=interface)
+                t2.setDaemon(True)
+                t2.start()
 
+            if command[0]=="injectjs":
+                current = "InjectJS"
+                injection_code = input("(InjectJS) Javascript Code >>")
+                t3 = threading.Thread(target=injectjs.run_injectjs, args=(injection_code[0]))
+                t3.setDaemon(True)
+                t3.start() 
 
+            if command[0]=="fintercept":
+                current = "FileIntercept"
+                
+            
+            
+            current = "alsploit"
 
             
-
-
-
         except KeyboardInterrupt:
             print("\nQuitting...............")
             current = "alsploit"

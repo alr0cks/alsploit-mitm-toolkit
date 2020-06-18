@@ -2,6 +2,7 @@
 
 import scapy.all as scapy
 import time
+import subprocess
 import sys
 from tkinter import *
 import threading
@@ -72,5 +73,6 @@ def show_gui(target_ip, gateway_ip):
 
 def arp_run(target_ip,gateway_ip):
     current = "arpspoof"
+    subprocess.call(["echo 1 > /proc/sys/net/ipv4/ip_forword"],shell=True)
     show_gui(target_ip, gateway_ip)
         
