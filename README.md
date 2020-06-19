@@ -34,14 +34,14 @@ $ python3 Main.py
 
 ### Modules:
 ```
-changemac   :Change MAC Address.
-netscan   :Scan network for possible active devices.
-arpspoof    :Spoof target with ARP requests.
-dnsspoof    :Spoof target with DNS (In Progress).
-sniff   :Sniff targets (Currently works with HTTP only HTTPS (In progress)).
+changemac     :Change MAC Address.
+netscan       :Scan network for possible active devices.
+arpspoof      :Spoof target with ARP requests.
+dnsspoof      :Spoof target with DNS (In Progress).
+sniff         :Sniff targets (Currently works with HTTP only HTTPS (In progress)).
 fintercept    :Replace downloadable files with trojons.
-injectjs    :Inject jsvascript code in websites.
-wififap    :Start Fake Access Point.
+injectjs      :Inject jsvascript code in websites.
+wififap       :Start Fake Access Point.
 ```
 <hr />
 
