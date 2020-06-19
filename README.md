@@ -29,6 +29,7 @@ Usage:
 ```bash
 $ python3 Main.py
 ```
+![ALSploit](/images/MainScreen.png?raw=true)
 
 <hr />
 
